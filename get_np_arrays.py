@@ -57,7 +57,7 @@ def npy_from_pkl(label):
     cuts = get_cuts(pass_fiducial, q_perp_mag, jet_pT_mag, asymm_phi, jet_qT)
 
 
-    np.save('npy_files/'+label+'from_rapgap_cuts.npy',cuts)
+    np.save('npy_files/'+label+'_cuts.npy',cuts)
     np.save('npy_files/'+label+'_jet_pT.npy',jet_pT_mag)
     np.save('npy_files/'+label+'_q_perp.npy',q_perp_mag)
     np.save('npy_files/'+label+'_asymm_angle.npy',asymm_phi)
