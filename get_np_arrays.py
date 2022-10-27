@@ -16,7 +16,20 @@ def npy_from_pkl(label):
     print("Loading PKL /clusterfs/ml4hep/yxu2/unfolding_mc_inputs/"+label+".pkl")
     mc = pd.read_pickle("/clusterfs/ml4hep/yxu2/unfolding_mc_inputs/"+label+".pkl") #FIXME: Do these fit on git?
 
-    theta0_G = mc[['gene_px','gene_py','gene_pz','genjet_pt','genjet_eta','genjet_phi','genjet_dphi','genjet_qtnorm']].to_numpy()
+
+
+    data = pd.read_pickle("/clusterfs/ml4hep/yxu2/unfolding_mc_inputs/Data_nominal.pkl")
+
+    leading_jets_only = True
+    if (leading_jets_only):
+        njets_tot = len(mc["e_px"])
+        data = data.loc[(slice(None),0), :]
+        mc = mc.loc[(slice(None),0), :]
+        print("Number of subjets cut = ",njets_tot-len(mc["jet_pt"])," / ",len(mc["jet_pt"]))
+
+
+    theta0_G = mc[['gene_px','gene_py','gene_pz','genjet_pt','genjet_eta',
+                   'genjet_phi','genjet_dphi','genjet_qtnorm']].to_numpy()
     weights_MC_sim = mc['wgt']
     pass_reco = np.array(mc['pass_reco'])
     pass_truth = np.array(mc['pass_truth'])
@@ -24,8 +37,8 @@ def npy_from_pkl(label):
     del mc
     _ = gc.collect()
 
-    data = pd.read_pickle("/clusterfs/ml4hep/yxu2/unfolding_mc_inputs/Data_nominal.pkl")
-    theta_unknown_S = data[['e_px','e_py','e_pz','jet_pt','jet_eta','jet_phi','jet_dphi','jet_qtnorm']].to_numpy()
+    theta_unknown_S = data[['e_px','e_py','e_pz','jet_pt','jet_eta',
+                            'jet_phi','jet_dphi','jet_qtnorm']].to_numpy()
     scaler_data = StandardScaler()
     scaler_data.fit(theta_unknown_S)
     del data
