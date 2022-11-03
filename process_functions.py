@@ -5,27 +5,49 @@ from tqdm import tqdm
     
 def averages_in_qperp_bins(dic, q_perp_bins,q_perp,asymm_phi,weights):
 
-    N_Bins = len(q_perp_bins)-1
     digits = np.digitize(q_perp,q_perp_bins)-1
+    N_Bins = len(q_perp_bins)-1
     
     q_w = q_perp*weights
     cos1_w = np.cos(1*asymm_phi)*weights
     cos2_w = np.cos(2*asymm_phi)*weights
     cos3_w = np.cos(3*asymm_phi)*weights
+
+    q_avg = np.zeros(N_Bins)
+    phi_avg = np.zeros(N_Bins)
+    cos1_avg = np.zeros(N_Bins)
+    cos2_avg = np.zeros(N_Bins)
+    cos3_avg = np.zeros(N_Bins)
+    err_avg = np.zeros(N_Bins)
     
     for i in range(N_Bins):
         bin_mask = digits==i
         bin_wsum = np.sum(weights[bin_mask])
         
-        dic["q_perp"][i]  = np.nansum(q_w[bin_mask])/bin_wsum
-        dic["phi"][i] = np.nansum(asymm_phi[bin_mask])/bin_wsum
-        dic["cos1"][i] = np.nansum(cos1_w[bin_mask])/bin_wsum
-        dic["cos2"][i] = np.nansum(cos2_w[bin_mask])/bin_wsum
-        dic["cos3"][i] = np.nansum(cos3_w[bin_mask])/bin_wsum
-        dic["errors"][i] = 1/np.sqrt(np.nansum(bin_wsum)) #NOT ACTUAL STAT. ERROR
+        q_avg[i] = np.nansum(q_w[bin_mask])/bin_wsum
+        phi_avg[i] = np.nansum(asymm_phi[bin_mask])/bin_wsum
+        cos1_avg[i] = np.nansum(cos1_w[bin_mask])/bin_wsum
+        cos2_avg[i] = np.nansum(cos2_w[bin_mask])/bin_wsum
+        cos3_avg[i] = np.nansum(cos3_w[bin_mask])/bin_wsum
+        err_avg[i] = 1/np.sqrt(np.nansum(bin_wsum)) #NOT ACTUAL STAT. ERROR
+
+    dic["q_perp"] = q_avg
+    dic["phi"] = phi_avg
+    dic["cos1"] = cos1_avg
+    dic["cos2"] = cos2_avg
+    dic["cos3"] = cos3_avg
+    dic["errors"] = err_avg
+
+        # dic["q_perp"][i] = np.nansum(q_w[bin_mask])/bin_wsum
+        # dic["phi"][i] = np.nansum(asymm_phi[bin_mask])/bin_wsum
+        # dic["cos1"][i] = np.nansum(cos1_w[bin_mask])/bin_wsum
+        # dic["cos2"][i] = np.nansum(cos2_w[bin_mask])/bin_wsum
+        # dic["cos3"][i] = np.nansum(cos3_w[bin_mask])/bin_wsum
+        # dic["errors"][i] = 1/np.sqrt(np.nansum(bin_wsum)) #NOT ACTUAL STAT. ERROR
     return
 
 def get_bootstrap_errors(boot_ensemble,q_perp,q_perp_bins,asymm_phi,cuts,title=""):
+    #takes q_perp and and phi, and calcs weighted <cos(n*phi)> for all ensemble iterations
 
     N_Bootstraps = np.shape(boot_ensemble)[0]
     N_Bins = len(q_perp_bins)-1
@@ -102,7 +124,3 @@ def get_bootstrap_errors(boot_ensemble,q_perp,q_perp_bins,asymm_phi,cuts,title="
     bootstrap_errors["cos3"] = cos3_errors
 
     return bootstrap_errors
-
-
-
-
