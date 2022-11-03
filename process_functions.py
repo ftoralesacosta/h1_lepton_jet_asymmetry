@@ -18,7 +18,6 @@ def averages_in_qperp_bins(dic, q_perp_bins,q_perp,asymm_phi,weights):
     cos1_avg = np.zeros(N_Bins)
     cos2_avg = np.zeros(N_Bins)
     cos3_avg = np.zeros(N_Bins)
-    err_avg = np.zeros(N_Bins)
     
     for i in range(N_Bins):
         bin_mask = digits==i
@@ -29,21 +28,14 @@ def averages_in_qperp_bins(dic, q_perp_bins,q_perp,asymm_phi,weights):
         cos1_avg[i] = np.nansum(cos1_w[bin_mask])/bin_wsum
         cos2_avg[i] = np.nansum(cos2_w[bin_mask])/bin_wsum
         cos3_avg[i] = np.nansum(cos3_w[bin_mask])/bin_wsum
-        err_avg[i] = 1/np.sqrt(np.nansum(bin_wsum)) #NOT ACTUAL STAT. ERROR
 
     dic["q_perp"] = q_avg
     dic["phi"] = phi_avg
     dic["cos1"] = cos1_avg
     dic["cos2"] = cos2_avg
     dic["cos3"] = cos3_avg
-    dic["errors"] = err_avg
 
-        # dic["q_perp"][i] = np.nansum(q_w[bin_mask])/bin_wsum
-        # dic["phi"][i] = np.nansum(asymm_phi[bin_mask])/bin_wsum
-        # dic["cos1"][i] = np.nansum(cos1_w[bin_mask])/bin_wsum
-        # dic["cos2"][i] = np.nansum(cos2_w[bin_mask])/bin_wsum
-        # dic["cos3"][i] = np.nansum(cos3_w[bin_mask])/bin_wsum
-        # dic["errors"][i] = 1/np.sqrt(np.nansum(bin_wsum)) #NOT ACTUAL STAT. ERROR
+    print("Keys =", dic.keys(), "N_Bins = ",N_Bins)
     return
 
 def get_bootstrap_errors(boot_ensemble,q_perp,q_perp_bins,asymm_phi,cuts,title=""):
