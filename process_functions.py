@@ -9,23 +9,27 @@ def averages_in_qperp_bins(dic, q_perp_bins,q_perp,asymm_phi,weights):
     N_Bins = len(q_perp_bins)-1
     
     q_w = q_perp*weights
+    phi_w  = asymm_phi*weights
     cos1_w = np.cos(1*asymm_phi)*weights
+    sin1_w = np.sin(1*asymm_phi)*weights
     cos2_w = np.cos(2*asymm_phi)*weights
     cos3_w = np.cos(3*asymm_phi)*weights
 
     q_avg = np.zeros(N_Bins)
     phi_avg = np.zeros(N_Bins)
     cos1_avg = np.zeros(N_Bins)
+    sin1_avg = np.zeros(N_Bins)
     cos2_avg = np.zeros(N_Bins)
     cos3_avg = np.zeros(N_Bins)
     
     for i in range(N_Bins):
         bin_mask = digits==i
-        bin_wsum = np.sum(weights[bin_mask])
+        bin_wsum = np.nansum(weights[bin_mask])
         
         q_avg[i] = np.nansum(q_w[bin_mask])/bin_wsum
-        phi_avg[i] = np.nansum(asymm_phi[bin_mask])/bin_wsum
+        phi_avg[i] = np.nansum(phi_w[bin_mask])/bin_wsum
         cos1_avg[i] = np.nansum(cos1_w[bin_mask])/bin_wsum
+        sin1_avg[i] = np.nansum(sin1_w[bin_mask])/bin_wsum
         cos2_avg[i] = np.nansum(cos2_w[bin_mask])/bin_wsum
         cos3_avg[i] = np.nansum(cos3_w[bin_mask])/bin_wsum
 
@@ -33,6 +37,7 @@ def averages_in_qperp_bins(dic, q_perp_bins,q_perp,asymm_phi,weights):
     dic["phi"] = phi_avg
     dic["cos1"] = cos1_avg
     dic["cos2"] = cos2_avg
+    dic["sin1"] = sin1_avg
     dic["cos3"] = cos3_avg
 
     print("Keys =", dic.keys(), "N_Bins = ",N_Bins)
