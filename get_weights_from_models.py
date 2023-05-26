@@ -5,14 +5,15 @@ from sklearn.preprocessing import StandardScaler
 from tqdm import tqdm
 
 import os
-os.environ['CUDA_VISIBLE_DEVICES']="0"
+os.environ['CUDA_VISIBLE_DEVICES']="3"
 physical_devices = tf.config.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 mc = pd.read_pickle("/clusterfs/ml4hep/yxu2/unfolding_mc_inputs/Rapgap_nominal.pkl")
 data = pd.read_pickle("/clusterfs/ml4hep/yxu2/unfolding_mc_inputs/Data_nominal.pkl")
 
 #Apply Cuts
-cut_subleading_jet = False
+cut_subleading_jet = True
 if cut_subleading_jet:
     mc = mc.loc[(slice(None),0), :]
     data = data.loc[(slice(None),0), :]
@@ -55,7 +56,7 @@ for seed in tqdm(np.concatenate([range(1,30),range(34,45),[46,47,48,49],range(54
         NNweights_step2_hold[pass_truth==0] = 1.
         NNweights_step2 = NNweights_step2_hold*NNweights_step2
  
-        keras.backend.clear_session()
+        tf.keras.backend.clear_session()
 
     bootstrap_weights.append(NNweights_step2)
 
